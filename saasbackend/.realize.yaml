@@ -1,0 +1,21 @@
+schema:
+- name: saasbackend
+  path: ./
+  commands:
+    install:
+      status: true
+      method: go install ./...
+    build:
+      status: true
+      method: go build -o ./bin/saasbackend
+    run:
+      status: true
+      method: /go/bin/saasbackend
+  watcher:
+    paths:
+    - /
+    extensions:
+    - go
+    ignored_paths:
+    - .git
+    - .realize
