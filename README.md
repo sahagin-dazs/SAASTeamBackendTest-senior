@@ -37,12 +37,12 @@ Run `make test_before` and all tests should pass.
 
 #### 2) ProductType
 * Implement a new field on products in the system called ProductType.
-* Product 1 and 2 are a "food", Product 2 and 4 are "sporting_good".
+* Product 1 and 2 are a "food", Product 3 and 4 are "sporting_good".
 
 #### 3) Hidden Fields
 * The Product model contains hidden fields that we don't want to expose through the `GET` endpoints, but want to keep internally.
-* Both `discount_product_price` and `coupon_code` should be hidden fields and should _not_ be exposed through the `GET /products` or `GET /products/{product_id}` endpoint.
-* Fix the system such that `discount_product_price` and `coupon_code` are still fields that can be set with `POST /products`, but are not returned to the user through the `GET` endpoints.
+* Both `product_discount_price` and `coupon_code` should be hidden fields and should _not_ be exposed through the `GET /products` or `GET /products/{product_id}` endpoint.
+* Fix the system such that `product_discount_price` and `coupon_code` are still fields that can be set with `POST /products`, but are not returned to the user through the `GET` endpoints.
 
 #### 4) Calculate Price
 * Implement the `/calculate-price` API endpoint.

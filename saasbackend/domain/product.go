@@ -52,6 +52,7 @@ func (ps ProductService) GetProductById(productId string) (*models.Product, erro
 func (ps ProductService) Save(product models.Product) (*models.Product, error) {
 	myProduct := models.Product{
 		ProductName:          product.ProductName,
+		ProductType:					product.ProductType,
 		ProductPrice:         product.ProductPrice,
 		ProductDiscountPrice: product.ProductDiscountPrice,
 		CouponCode:           product.CouponCode,
