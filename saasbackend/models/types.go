@@ -3,8 +3,9 @@ package models
 // Create a struct pointer that will never be set
 type omit *struct{}
 
+// Changed the former struct to support the omitted fields
 type ProductsResponseOmittedFields struct {
-	Count    int64      						`json:"count"`
+	Count    int64                  `json:"count"`
 	Products []ProductOmittedFields `json:"products"`
 }
 
@@ -13,7 +14,7 @@ type ProductsResponseOmittedFields struct {
 type ProductOmittedFields struct {
 	*Product
 	ProductDiscountPrice omit `json:"product_discount_price,omitempty"`
-	CouponCode					 omit `json:"coupon_code,omitempty"`
+	CouponCode           omit `json:"coupon_code,omitempty"`
 }
 
 type Product struct {
@@ -24,6 +25,3 @@ type Product struct {
 	ProductDiscountPrice int64  `json:"product_discount_price"`
 	CouponCode           string `json:"coupon_code"`
 }
-
-
-

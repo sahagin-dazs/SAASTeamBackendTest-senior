@@ -44,7 +44,7 @@ func GetProductById(productService domain.ProductServiceInterface) func(w http.R
 		}
 
 		// Create a new object with the ProductOmittedFields struct to exclude the values from the returned payload
-		productOmittedFields:= models.ProductOmittedFields{
+		productOmittedFields := models.ProductOmittedFields{
 			Product: product,
 		}
 
@@ -61,7 +61,7 @@ func GetAllProducts(productService domain.ProductServiceInterface) func(w http.R
 
 		// Define empty object array
 		var productsOmittedFields []models.ProductOmittedFields
-		
+
 		// Loop through all of the products we retrieved
 		for _, product := range products {
 
