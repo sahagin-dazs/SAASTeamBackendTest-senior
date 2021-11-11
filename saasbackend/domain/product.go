@@ -33,25 +33,26 @@ func NewProductService(p1 ProductHandler) ProductServiceInterface {
 func (ps ProductService) CalculatePrice(cart models.Cart) (*models.CalculatePriceResponse, error) {
 	// Set up our variables
 	totalCost := int64(0)
-	totalObjects := int64(len(cart.Cart))
+	totalObjects := int64(0)
 
 	// Iterate throught the cart object
 	for _, item := range cart.Cart {
 		// Retrieve a product if it's valid, let us know if it isn't
 		product, invalidProduct := ps.productHandler.ReadOne(item.ProductID)
 
-		// If a product isn't valid, remove it from the total and move on to the next one
-		if invalidProduct != nil {
-			totalObjects--
+		// If a product isn't valid or the quantity is invalid, remove it from the total objects and move on to the next item
+		if (invalidProduct != nil) || (item.Quantity <= 0) {
 			continue
 		}
 
 		// If there are valid matching coupon codes for a given product ID (case insensitive), give the discounted price, otherwise give the normal price
 		if (len(item.CouponCode) != 0) && (len(product.CouponCode) != 0) && (strings.EqualFold(item.CouponCode, product.CouponCode)) {
-			totalCost += product.ProductDiscountPrice
+			totalCost += (product.ProductDiscountPrice * item.Quantity)
 		} else {
-			totalCost += product.ProductPrice
+			totalCost += (product.ProductPrice * item.Quantity)
 		}
+
+		totalObjects += item.Quantity
 	}
 
 	// Create the price calculation response object
