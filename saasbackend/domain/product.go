@@ -15,8 +15,8 @@ type ProductHandler interface {
 // NOTE - I modified the interface to have the new return type with the omitted fields for Get Product(s) and Calculate Price
 type ProductServiceInterface interface {
 	CalculatePrice(cart models.Cart) (*models.CalculatePriceResponse, error)
-	GetAllProducts() (*models.ProductsOmittedFields, error)
-	GetProductById(string) (*models.ProductOmittedFields, error)
+	GetAllProducts() (*models.ProductsResponse, error)
+	GetProductById(string) (*models.ProductResponse, error)
 	Save(models.Product) (*models.Product, error)
 }
 
@@ -37,16 +37,21 @@ func (ps ProductService) CalculatePrice(cart models.Cart) (*models.CalculatePric
 
 	// Iterate throught the cart object
 	for _, item := range cart.Cart {
-		// Retrieve a product if it's valid, let us know if it isn't
-		product, invalidProduct := ps.productHandler.ReadOne(item.ProductID)
+		// Make sure a proper quantity was provided
+		if item.Quantity <= 0 {
+			continue
+		}
 
-		// If a product isn't valid or the quantity is invalid, remove it from the total objects and move on to the next item
-		if (invalidProduct != nil) || (item.Quantity <= 0) {
+		// Retrieve a product if it's valid, let us know if it isn't
+		product, err := ps.productHandler.ReadOne(item.ProductID)
+
+		// If a product isn't valid, move on to the next item
+		if err != nil {
 			continue
 		}
 
 		// If there are valid matching coupon codes for a given product ID (case insensitive), give the discounted price, otherwise give the normal price
-		if (len(item.CouponCode) != 0) && (len(product.CouponCode) != 0) && (strings.EqualFold(item.CouponCode, product.CouponCode)) {
+		if (product.CouponCode != "") && (strings.EqualFold(product.CouponCode, item.CouponCode)) {
 			totalCost += (product.ProductDiscountPrice * item.Quantity)
 		} else {
 			totalCost += (product.ProductPrice * item.Quantity)
@@ -64,48 +69,53 @@ func (ps ProductService) CalculatePrice(cart models.Cart) (*models.CalculatePric
 	return &calculatePriceResponse, nil
 }
 
-func (ps ProductService) GetAllProducts() (*models.ProductsOmittedFields, error) {
+func (ps ProductService) GetAllProducts() (*models.ProductsResponse, error) {
 	myProducts, err := ps.productHandler.Read()
 	if err != nil {
 		return nil, fmt.Errorf("read: %w", err)
 	}
 
-	// Define ProductOmittedFields object array
-	var productsOmittedFields []models.ProductOmittedFields
+	// Create product response array
+	var productResponse []models.ProductResponse
 
-	// Iterate through all products
-	for _, product := range myProducts {
-
-		// Create a ProductOmittedFields object and assign the current product to it
-		productOmittedFields := models.ProductOmittedFields{
-			Product: product,
+	// Iterate through all of the products
+	for _, myProduct := range myProducts {
+		// Map a single product to a product response object
+		product := models.ProductResponse{
+			ProductId:    myProduct.ProductId,
+			ProductName:  myProduct.ProductName,
+			ProductType:  myProduct.ProductType,
+			ProductPrice: myProduct.ProductPrice,
 		}
 
-		// Append that object to the object array
-		productsOmittedFields = append(productsOmittedFields, productOmittedFields)
+		// Append the product response object to the product response object array
+		productResponse = append(productResponse, product)
 	}
 
-	// Create the get all products response with omitted fields object
-	productsResponseOmittedFields := models.ProductsOmittedFields{
-		Products: productsOmittedFields,
+	// Create the get all products response object
+	productsResponse := models.ProductsResponse{
+		Products: productResponse,
 		Count:    int64(len(myProducts)),
 	}
 
-	return &productsResponseOmittedFields, nil
+	return &productsResponse, nil
 }
 
-func (ps ProductService) GetProductById(productId string) (*models.ProductOmittedFields, error) {
+func (ps ProductService) GetProductById(productId string) (*models.ProductResponse, error) {
 	myProduct, err := ps.productHandler.ReadOne(productId)
 	if err != nil {
 		return nil, fmt.Errorf("read one: %w", err)
 	}
 
-	// Create the get product response with omitted fields object
-	productResponseOmittedFields := models.ProductOmittedFields{
-		Product: myProduct,
+	// Create the get product response object
+	productResponse := models.ProductResponse{
+		ProductId:    myProduct.ProductId,
+		ProductName:  myProduct.ProductName,
+		ProductType:  myProduct.ProductType,
+		ProductPrice: myProduct.ProductPrice,
 	}
 
-	return &productResponseOmittedFields, nil
+	return &productResponse, nil
 }
 
 func (ps ProductService) Save(product models.Product) (*models.Product, error) {

@@ -44,9 +44,9 @@ func (s *TestHelper) JSONBytesEqual(a, b []byte) (bool, error) {
 	return reflect.DeepEqual(j2, j), nil
 }
 
-func (s *TestHelper) MapJSONBodyIsEqualString(t *testing.T, responsString string, myPB string) {
+func (s *TestHelper) MapJSONBodyIsEqualString(t *testing.T, responseString string, myPB string) {
 	testBytes := []byte(myPB)
-	responseBytes := []byte(responsString)
+	responseBytes := []byte(responseString)
 	eq, err := s.JSONBytesEqual(responseBytes, testBytes)
 	if err != nil {
 		t.Errorf("error JSONBytesEqual: %v", err)
