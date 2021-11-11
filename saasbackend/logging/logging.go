@@ -4,7 +4,7 @@ import (
 	"context"
 	"io/ioutil"
 	"os"
-	
+
 	log "github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/writer"
 )
@@ -65,7 +65,6 @@ func LogWarn(ctx context.Context, scope string, msg string) {
 	fields := make(log.Fields)
 
 	fields["scope"] = scope
-
 
 	log.WithFields(fields).Warn(msg)
 }

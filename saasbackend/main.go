@@ -3,15 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/spf13/cobra"
 	"net/http"
 	"os"
 	"saasteamtest/saasbackend/internal"
-	"github.com/spf13/cobra"
 
-	"saasteamtest/saasbackend/logging"
 	log "github.com/sirupsen/logrus"
-
-	
+	"saasteamtest/saasbackend/logging"
 )
 
 func main() {
@@ -47,4 +45,3 @@ var rootCmd = &cobra.Command{
 		return nil
 	},
 }
-

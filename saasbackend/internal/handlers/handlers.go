@@ -24,7 +24,7 @@ func CreateProduct(productService domain.ProductServiceInterface) func(w http.Re
 		err = json.Unmarshal(body, &product)
 		if err != nil {
 			// Return an HTTP 400 if the request payload is malformed
-			return Respond(w, "Payload is malformed", 400)			
+			return Respond(w, "Payload is malformed", 400)
 		}
 
 		savedProduct, err := productService.Save(product)
@@ -45,7 +45,7 @@ func GetProductById(productService domain.ProductServiceInterface) func(w http.R
 		product, err := productService.GetProductById(productId)
 		if err != nil {
 			// Return an HTTP 404 if the requested product is not found
-			return Respond(w, "Product not found", 404)			
+			return Respond(w, "Product not found", 404)
 		}
 
 		return RespondOK(w, product)
@@ -71,7 +71,7 @@ func CalculatePrice(productService domain.ProductServiceInterface) func(w http.R
 	return func(w http.ResponseWriter, r *http.Request) error {
 		// Get the JSON body from the inbound request
 		body, err := ioutil.ReadAll(r.Body)
-		if err != nil {			
+		if err != nil {
 			return fmt.Errorf("readAll: %w", err)
 		}
 
@@ -80,7 +80,7 @@ func CalculatePrice(productService domain.ProductServiceInterface) func(w http.R
 		err = json.Unmarshal(body, &cart)
 		if err != nil {
 			// Return an HTTP 400 if the request payload is malformed
-			return Respond(w, "Payload is malformed", 400)			
+			return Respond(w, "Payload is malformed", 400)
 		}
 
 		// Call the CalculatePrice service

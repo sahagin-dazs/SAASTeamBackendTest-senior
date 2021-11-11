@@ -35,7 +35,7 @@ type Cart struct {
 	} `json:"cart"`
 }
 
-// Response object 
+// Response object
 type CalculatePriceResponse struct {
 	TotalObjects int64 `json:"total_objects"`
 	TotalCost    int64 `json:"total_cost"`
