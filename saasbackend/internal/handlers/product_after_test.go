@@ -148,11 +148,11 @@ func TestCalculatePrice1(t *testing.T) {
 		"cart": []interface{}{
 			map[string]interface{}{
 				"product_id": "1",
-				"quantity": 2,
+				"quantity":   2,
 			},
 			map[string]interface{}{
 				"product_id": "2",
-				"quantity": 2,
+				"quantity":   2,
 			},
 		},
 	}
@@ -188,20 +188,20 @@ func TestCalculatePrice2(t *testing.T) {
 		"cart": []interface{}{
 			map[string]interface{}{
 				"product_id": "1",
-				"quantity": 1,
+				"quantity":   1,
 			},
 			map[string]interface{}{
 				"product_id": "2",
-				"quantity": 1,
+				"quantity":   1,
 			},
 			map[string]interface{}{
-				"product_id": "3",
-				"quantity": 1,
+				"product_id":  "3",
+				"quantity":    1,
 				"coupon_code": "sport30",
 			},
 			map[string]interface{}{
-				"product_id": "4",
-				"quantity": 1,
+				"product_id":  "4",
+				"quantity":    1,
 				"coupon_code": "sport30",
 			},
 		},
@@ -238,19 +238,19 @@ func TestCalculatePrice3(t *testing.T) {
 		"cart": []interface{}{
 			map[string]interface{}{
 				"product_id": "1",
-				"quantity": 0,
+				"quantity":   0,
 			},
 			map[string]interface{}{
 				"product_id": "2",
-				"quantity": 0,
+				"quantity":   0,
 			},
 			map[string]interface{}{
 				"product_id": "3",
-				"quantity": 0,
+				"quantity":   0,
 			},
 			map[string]interface{}{
 				"product_id": "4",
-				"quantity": 0,
+				"quantity":   0,
 			},
 		},
 	}
@@ -286,20 +286,20 @@ func TestCalculatePrice4(t *testing.T) {
 		"cart": []interface{}{
 			map[string]interface{}{
 				"product_id": "1",
-				"quantity": 100,
+				"quantity":   100,
 			},
 			map[string]interface{}{
-				"product_id": "2",
-				"quantity": 100,
+				"product_id":  "2",
+				"quantity":    100,
 				"coupon_code": "food50",
 			},
 			map[string]interface{}{
 				"product_id": "3",
-				"quantity": 0,
+				"quantity":   0,
 			},
 			map[string]interface{}{
 				"product_id": "4",
-				"quantity": 0,
+				"quantity":   0,
 			},
 		},
 	}
@@ -335,16 +335,16 @@ func TestCalculatePrice5(t *testing.T) {
 		"cart": []interface{}{
 			map[string]interface{}{
 				"product_id": "1",
-				"quantity": 50,
+				"quantity":   50,
 			},
 			map[string]interface{}{
-				"product_id": "21",
-				"quantity": 50,
+				"product_id":  "21",
+				"quantity":    50,
 				"coupon_code": "food50",
 			},
 		},
 	}
-	
+
 	body, err := json.Marshal(myPB)
 	if err != nil {
 		t.Error(err)
