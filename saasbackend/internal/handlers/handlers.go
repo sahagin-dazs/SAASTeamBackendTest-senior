@@ -11,7 +11,8 @@ import (
 	"github.com/go-chi/chi"
 )
 
-// send a whole YED shipment to this endpoint, return the vendor
+// CreateProduct creates a new product.
+// POST /products
 func CreateProduct(productService domain.ProductServiceInterface) func(w http.ResponseWriter, r *http.Request) error {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		body, err := ioutil.ReadAll(r.Body)
@@ -22,7 +23,8 @@ func CreateProduct(productService domain.ProductServiceInterface) func(w http.Re
 		var product models.Product
 		err = json.Unmarshal(body, &product)
 		if err != nil {
-			return fmt.Errorf("unmarshal: %w", err)
+			// Return an HTTP 400 if the request payload is malformed
+			return Respond(w, "Payload is malformed", 400)			
 		}
 
 		savedProduct, err := productService.Save(product)
@@ -34,24 +36,24 @@ func CreateProduct(productService domain.ProductServiceInterface) func(w http.Re
 	}
 }
 
+// GetProductById gets a single product by its ID.
+// GET /products/{product_id}
 func GetProductById(productService domain.ProductServiceInterface) func(w http.ResponseWriter, r *http.Request) error {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		productId := chi.URLParam(r, "product_id")
 
 		product, err := productService.GetProductById(productId)
 		if err != nil {
-			return fmt.Errorf("get product by id: %w", err)
+			// Return an HTTP 404 if the requested product is not found
+			return Respond(w, "Product not found", 404)			
 		}
 
-		// Create a new object with the ProductOmittedFields struct to exclude the values from the returned payload
-		productOmittedFields := models.ProductOmittedFields{
-			Product: product,
-		}
-
-		return RespondOK(w, productOmittedFields)
+		return RespondOK(w, product)
 	}
 }
 
+// GetAllProducts gets all of the products.
+// GET /products
 func GetAllProducts(productService domain.ProductServiceInterface) func(w http.ResponseWriter, r *http.Request) error {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		products, err := productService.GetAllProducts()
@@ -59,32 +61,35 @@ func GetAllProducts(productService domain.ProductServiceInterface) func(w http.R
 			return fmt.Errorf("get all products: %w", err)
 		}
 
-		// Define empty object array
-		var productsOmittedFields []models.ProductOmittedFields
-
-		// Loop through all of the products we retrieved
-		for _, product := range products {
-
-			// Create a ProductOmittedFields object with the product value
-			productOmittedFields := models.ProductOmittedFields{
-				Product: product,
-			}
-
-			// Append that object to the object array
-			productsOmittedFields = append(productsOmittedFields, productOmittedFields)
-		}
-
-		productsResponseOmittedFields := models.ProductsResponseOmittedFields{
-			Products: productsOmittedFields,
-			Count:    int64(len(products)),
-		}
-
-		return RespondOK(w, productsResponseOmittedFields)
+		return RespondOK(w, products)
 	}
 }
 
+// CalculatePrice calculated the price for the entire cart.
+// POST /calculate-price
 func CalculatePrice(productService domain.ProductServiceInterface) func(w http.ResponseWriter, r *http.Request) error {
 	return func(w http.ResponseWriter, r *http.Request) error {
-		return nil
+		// Get the JSON body from the inbound request
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {			
+			return fmt.Errorf("readAll: %w", err)
+		}
+
+		// Create new Cart object and unmarshal the JSON body into the object
+		var cart models.Cart
+		err = json.Unmarshal(body, &cart)
+		if err != nil {
+			// Return an HTTP 400 if the request payload is malformed
+			return Respond(w, "Payload is malformed", 400)			
+		}
+
+		// Call the CalculatePrice service
+		calculatePrice, err := productService.CalculatePrice(cart)
+
+		if err != nil {
+			return fmt.Errorf("get total cost of cart: %w", err)
+		}
+
+		return RespondOK(w, calculatePrice)
 	}
 }

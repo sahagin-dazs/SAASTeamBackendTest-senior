@@ -1,4 +1,5 @@
-//+build before
+//go:build before
+// +build before
 
 package handlers
 

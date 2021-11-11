@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"os"
 	"reflect"
-	"testing"
 	"saasteamtest/saasbackend/data"
 	"saasteamtest/saasbackend/domain"
+	"testing"
 
 	"github.com/google/go-cmp/cmp"
 )
 
 var (
-	testHelper         TestHelper
+	testHelper     TestHelper
 	productService domain.ProductServiceInterface
 )
 
@@ -29,8 +29,7 @@ func setUp() {
 	productService = domain.NewProductService(productHandler)
 }
 
-
-type TestHelper struct {}
+type TestHelper struct{}
 
 // JSONBytesEqual compares the JSON in two byte slices.
 func (s *TestHelper) JSONBytesEqual(a, b []byte) (bool, error) {

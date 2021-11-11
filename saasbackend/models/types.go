@@ -4,7 +4,7 @@ package models
 type omit *struct{}
 
 // Changed the former struct to support the omitted fields
-type ProductsResponseOmittedFields struct {
+type ProductsOmittedFields struct {
 	Count    int64                  `json:"count"`
 	Products []ProductOmittedFields `json:"products"`
 }
@@ -24,4 +24,19 @@ type Product struct {
 	ProductPrice         int64  `json:"product_price"`
 	ProductDiscountPrice int64  `json:"product_discount_price"`
 	CouponCode           string `json:"coupon_code"`
+}
+
+// Request object that matches the payload supplied in the example
+type Cart struct {
+	Cart []struct {
+		ProductID  string `json:"product_id"`
+		Quantity   int64  `json:"quantity"`
+		CouponCode string `json:"coupon_code,omitempty"`
+	} `json:"cart"`
+}
+
+// Response object 
+type CalculatePriceResponse struct {
+	TotalObjects int64 `json:"total_objects"`
+	TotalCost    int64 `json:"total_cost"`
 }
