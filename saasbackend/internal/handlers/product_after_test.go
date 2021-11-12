@@ -18,12 +18,13 @@ type MSI map[string]interface{}
 
 func TestCreateProduct(t *testing.T) {
 
-	newProduct := make(map[string]interface{})
-	newProduct["product_name"] = "volleyball"
-	newProduct["product_price"] = 750
-	newProduct["product_type"] = "sporting_good"
-	newProduct["product_discount_price"] = 525
-	newProduct["coupon_code"] = "sport30"
+	newProduct := MSI{
+		"product_name":           "volleyball",
+		"product_price":          750,
+		"product_type":           "sporting_good",
+		"product_discount_price": 525,
+		"coupon_code":            "sport30",
+	}
 
 	body, err := json.Marshal(newProduct)
 	if err != nil {
@@ -56,11 +57,12 @@ func TestGetProductById2(t *testing.T) {
 	r.Method("GET", "/products/{product_id}", BaseHandler(GetProductById(productService)))
 	r.ServeHTTP(rec, req)
 
-	myProduct := make(map[string]interface{})
-	myProduct["product_id"] = "2"
-	myProduct["product_name"] = "burrito"
-	myProduct["product_price"] = 700
-	myProduct["product_type"] = "food"
+	myProduct := MSI{
+		"product_id":    "2",
+		"product_name":  "burrito",
+		"product_price": 700,
+		"product_type":  "food",
+	}
 
 	expectedResult, err := json.Marshal(myProduct)
 	if err != nil {
@@ -79,11 +81,12 @@ func TestGetProductById3(t *testing.T) {
 	r.Method("GET", "/products/{product_id}", BaseHandler(GetProductById(productService)))
 	r.ServeHTTP(rec, req)
 
-	myProduct := make(map[string]interface{})
-	myProduct["product_id"] = "3"
-	myProduct["product_name"] = "basketball"
-	myProduct["product_price"] = 1200
-	myProduct["product_type"] = "sporting_good"
+	myProduct := MSI{
+		"product_id":    "3",
+		"product_name":  "basketball",
+		"product_price": 1200,
+		"product_type":  "sporting_good",
+	}
 
 	expectedResult, err := json.Marshal(myProduct)
 	if err != nil {
@@ -102,36 +105,41 @@ func TestGetAllProducts(t *testing.T) {
 	r.Method("GET", "/products", BaseHandler(GetAllProducts(productService)))
 	r.ServeHTTP(rec, req)
 
-	prod1 := make(map[string]interface{})
-	prod1["product_id"] = "1"
-	prod1["product_name"] = "banana"
-	prod1["product_type"] = "food"
-	prod1["product_price"] = 500
+	prod1 := MSI{
+		"product_id":    "1",
+		"product_name":  "banana",
+		"product_type":  "food",
+		"product_price": 500,
+	}
 
-	prod2 := make(map[string]interface{})
-	prod2["product_id"] = "2"
-	prod2["product_name"] = "burrito"
-	prod2["product_type"] = "food"
-	prod2["product_price"] = 700
+	prod2 := MSI{
+		"product_id":    "2",
+		"product_name":  "burrito",
+		"product_type":  "food",
+		"product_price": 700,
+	}
 
-	prod3 := make(map[string]interface{})
-	prod3["product_id"] = "3"
-	prod3["product_name"] = "basketball"
-	prod3["product_type"] = "sporting_good"
-	prod3["product_price"] = 1200
+	prod3 := MSI{
+		"product_id":    "3",
+		"product_name":  "basketball",
+		"product_type":  "sporting_good",
+		"product_price": 1200,
+	}
 
-	prod4 := make(map[string]interface{})
-	prod4["product_id"] = "4"
-	prod4["product_name"] = "baseball"
-	prod4["product_type"] = "sporting_good"
-	prod4["product_price"] = 900
+	prod4 := MSI{
+		"product_id":    "4",
+		"product_name":  "baseball",
+		"product_type":  "sporting_good",
+		"product_price": 900,
+	}
 
-	var productSlice []map[string]interface{}
+	var productSlice []MSI
 	productSlice = append(productSlice, prod1, prod2, prod3, prod4)
 
-	myProductResult := make(map[string]interface{})
-	myProductResult["count"] = 4
-	myProductResult["products"] = productSlice
+	myProductResult := MSI{
+		"count":    4,
+		"products": productSlice,
+	}
 
 	expectedResult, err := json.Marshal(myProductResult)
 	if err != nil {
@@ -144,13 +152,13 @@ func TestGetAllProducts(t *testing.T) {
 func TestCalculatePrice1(t *testing.T) {
 
 	// Create the object we will submit in the request body
-	myPB := map[string]interface{}{
+	myPB := MSI{
 		"cart": []interface{}{
-			map[string]interface{}{
+			MSI{
 				"product_id": "1",
 				"quantity":   2,
 			},
-			map[string]interface{}{
+			MSI{
 				"product_id": "2",
 				"quantity":   2,
 			},
@@ -169,9 +177,10 @@ func TestCalculatePrice1(t *testing.T) {
 	r.Method("POST", "/calculate-price", BaseHandler(CalculatePrice(productService)))
 	r.ServeHTTP(rec, req)
 
-	myPrices := make(map[string]interface{})
-	myPrices["total_objects"] = 4
-	myPrices["total_cost"] = 2400
+	myPrices := MSI{
+		"total_objects": 4,
+		"total_cost":    2400,
+	}
 
 	expectedResult, err := json.Marshal(myPrices)
 	if err != nil {
@@ -184,22 +193,22 @@ func TestCalculatePrice1(t *testing.T) {
 func TestCalculatePrice2(t *testing.T) {
 
 	// Create the object we will submit in the request body
-	myPB := map[string]interface{}{
+	myPB := MSI{
 		"cart": []interface{}{
-			map[string]interface{}{
+			MSI{
 				"product_id": "1",
 				"quantity":   1,
 			},
-			map[string]interface{}{
+			MSI{
 				"product_id": "2",
 				"quantity":   1,
 			},
-			map[string]interface{}{
+			MSI{
 				"product_id":  "3",
 				"quantity":    1,
 				"coupon_code": "sport30",
 			},
-			map[string]interface{}{
+			MSI{
 				"product_id":  "4",
 				"quantity":    1,
 				"coupon_code": "sport30",
@@ -219,9 +228,10 @@ func TestCalculatePrice2(t *testing.T) {
 	r.Method("POST", "/calculate-price", BaseHandler(CalculatePrice(productService)))
 	r.ServeHTTP(rec, req)
 
-	myPrices := make(map[string]interface{})
-	myPrices["total_objects"] = 4
-	myPrices["total_cost"] = 2670
+	myPrices := MSI{
+		"total_objects": 4,
+		"total_cost":    2670,
+	}
 
 	expectedResult, err := json.Marshal(myPrices)
 	if err != nil {
@@ -234,21 +244,21 @@ func TestCalculatePrice2(t *testing.T) {
 func TestCalculatePrice3(t *testing.T) {
 
 	// Create the object we will submit in the request body
-	myPB := map[string]interface{}{
+	myPB := MSI{
 		"cart": []interface{}{
-			map[string]interface{}{
+			MSI{
 				"product_id": "1",
 				"quantity":   0,
 			},
-			map[string]interface{}{
+			MSI{
 				"product_id": "2",
 				"quantity":   0,
 			},
-			map[string]interface{}{
+			MSI{
 				"product_id": "3",
 				"quantity":   0,
 			},
-			map[string]interface{}{
+			MSI{
 				"product_id": "4",
 				"quantity":   0,
 			},
@@ -267,9 +277,10 @@ func TestCalculatePrice3(t *testing.T) {
 	r.Method("POST", "/calculate-price", BaseHandler(CalculatePrice(productService)))
 	r.ServeHTTP(rec, req)
 
-	myPrices := make(map[string]interface{})
-	myPrices["total_objects"] = 0
-	myPrices["total_cost"] = 0
+	myPrices := MSI{
+		"total_objects": 0,
+		"total_cost":    0,
+	}
 
 	expectedResult, err := json.Marshal(myPrices)
 	if err != nil {
@@ -282,22 +293,22 @@ func TestCalculatePrice3(t *testing.T) {
 func TestCalculatePrice4(t *testing.T) {
 
 	// Create the object we will submit in the request body
-	myPB := map[string]interface{}{
+	myPB := MSI{
 		"cart": []interface{}{
-			map[string]interface{}{
+			MSI{
 				"product_id": "1",
 				"quantity":   100,
 			},
-			map[string]interface{}{
+			MSI{
 				"product_id":  "2",
 				"quantity":    100,
 				"coupon_code": "food50",
 			},
-			map[string]interface{}{
+			MSI{
 				"product_id": "3",
 				"quantity":   0,
 			},
-			map[string]interface{}{
+			MSI{
 				"product_id": "4",
 				"quantity":   0,
 			},
@@ -316,9 +327,10 @@ func TestCalculatePrice4(t *testing.T) {
 	r.Method("POST", "/calculate-price", BaseHandler(CalculatePrice(productService)))
 	r.ServeHTTP(rec, req)
 
-	myPrices := make(map[string]interface{})
-	myPrices["total_objects"] = 200
-	myPrices["total_cost"] = 85000
+	myPrices := MSI{
+		"total_objects": 200,
+		"total_cost":    85000,
+	}
 
 	expectedResult, err := json.Marshal(myPrices)
 	if err != nil {
@@ -331,13 +343,13 @@ func TestCalculatePrice4(t *testing.T) {
 func TestCalculatePrice5(t *testing.T) {
 
 	// Create the object we will submit in the request body
-	myPB := map[string]interface{}{
+	myPB := MSI{
 		"cart": []interface{}{
-			map[string]interface{}{
+			MSI{
 				"product_id": "1",
 				"quantity":   50,
 			},
-			map[string]interface{}{
+			MSI{
 				"product_id":  "21",
 				"quantity":    50,
 				"coupon_code": "food50",
@@ -357,9 +369,10 @@ func TestCalculatePrice5(t *testing.T) {
 	r.Method("POST", "/calculate-price", BaseHandler(CalculatePrice(productService)))
 	r.ServeHTTP(rec, req)
 
-	myPrices := make(map[string]interface{})
-	myPrices["total_objects"] = 50
-	myPrices["total_cost"] = 25000
+	myPrices := MSI{
+		"total_objects": 50,
+		"total_cost":    25000,
+	}
 
 	expectedResult, err := json.Marshal(myPrices)
 	if err != nil {
