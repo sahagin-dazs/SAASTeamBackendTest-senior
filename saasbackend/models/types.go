@@ -8,10 +8,10 @@ type ProductsResponse struct {
 
 // ProductResponse object containing the fields we want the API consumer to receive
 type ProductResponse struct {
-	ProductId    string `json:"product_id"`
-	ProductName  string `json:"product_name"`
-	ProductType  string `json:"product_type"`
-	ProductPrice int64  `json:"product_price"`
+	ProductId    string `json:"product_id,omitempty"`
+	ProductName  string `json:"product_name,omitempty"`
+	ProductType  string `json:"product_type,omitempty"`
+	ProductPrice int64  `json:"product_price,omitempty"`
 }
 
 // Product object including ProductType

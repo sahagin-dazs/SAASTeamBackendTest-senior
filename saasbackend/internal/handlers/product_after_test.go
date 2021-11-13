@@ -133,11 +133,18 @@ func TestGetAllProducts(t *testing.T) {
 		"product_price": 900,
 	}
 
+	prod5 := MSI{
+		"product_id":    "5",
+		"product_name":  "volleyball",
+		"product_type":  "sporting_good",
+		"product_price": 750,
+	}
+
 	var productSlice []MSI
-	productSlice = append(productSlice, prod1, prod2, prod3, prod4)
+	productSlice = append(productSlice, prod1, prod2, prod3, prod4, prod5)
 
 	myProductResult := MSI{
-		"count":    4,
+		"count":    5,
 		"products": productSlice,
 	}
 

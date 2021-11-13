@@ -46,7 +46,7 @@ func (ps ProductService) CalculatePrice(cart models.Cart) (*models.CalculatePric
 		product, err := ps.productHandler.ReadOne(item.ProductID)
 
 		// If a product isn't valid, move on to the next item
-		if err != nil {
+		if (err != nil) || (product.ProductId == "") {
 			continue
 		}
 
@@ -104,7 +104,9 @@ func (ps ProductService) GetAllProducts() (*models.ProductsResponse, error) {
 func (ps ProductService) GetProductById(productId string) (*models.ProductResponse, error) {
 	myProduct, err := ps.productHandler.ReadOne(productId)
 	if err != nil {
-		return nil, fmt.Errorf("read one: %w", err)
+		if myProduct == nil {
+			return nil, fmt.Errorf("read one: %w", err)
+		}
 	}
 
 	// Create the get product response object
@@ -126,9 +128,11 @@ func (ps ProductService) Save(product models.Product) (*models.Product, error) {
 		ProductDiscountPrice: product.ProductDiscountPrice,
 		CouponCode:           product.CouponCode,
 	}
+
 	savedProduct, err := ps.productHandler.Create(myProduct)
 	if err != nil {
 		return nil, fmt.Errorf("create: %w", err)
 	}
+
 	return savedProduct, nil
 }

@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"net/http"
 	"os"
-	"saasteamtest/saasbackend/internal"
 
-	log "github.com/sirupsen/logrus"
+	"saasteamtest/saasbackend/internal"
 	"saasteamtest/saasbackend/logging"
 )
 
