@@ -17,6 +17,8 @@ type ProductHandle struct {
 
 func NewProductHandler() *ProductHandle {
 	productHandle := ProductHandle{}
+
+	// Initialize database
 	productHandle.counter = 5
 	productHandle.db, productHandle.err = productHandle.startDatabase()
 	if productHandle.err != nil {
@@ -77,13 +79,13 @@ func (h *ProductHandle) startDatabase() (*memdb.MemDB, error) {
 	// Create a new database
 	db, err := memdb.NewMemDB(schema)
 	if err != nil {
-		panic(err)
+		return nil, fmt.Errorf("create database: %w", err)
 	}
 
 	// Create a write transaction
 	txn := db.Txn(true)
 
-	// Insert test data
+	// Prepare test data
 	items := make([]*models.Product, 0)
 	item1 := models.Product{ProductId: "1", ProductName: "banana", ProductType: "food", ProductPrice: 500, ProductDiscountPrice: 250, CouponCode: "food50"}
 	items = append(items, &item1)
@@ -94,6 +96,7 @@ func (h *ProductHandle) startDatabase() (*memdb.MemDB, error) {
 	item4 := models.Product{ProductId: "4", ProductName: "baseball", ProductType: "sporting_good", ProductPrice: 900, ProductDiscountPrice: 630, CouponCode: "sport30"}
 	items = append(items, &item4)
 
+	// Insert the test data
 	for _, p := range items {
 		if err := txn.Insert("product", p); err != nil {
 			return nil, fmt.Errorf("insert test data: %w", err)
@@ -136,6 +139,7 @@ func (h *ProductHandle) ReadOne(q string) (*models.Product, error) {
 		return nil, fmt.Errorf("get product: %w", err)
 	}
 
+	// Don't return nil for empty object
 	if product != nil {
 		return product.(*models.Product), nil
 	} else {
@@ -154,6 +158,7 @@ func (h *ProductHandle) Read() ([]*models.Product, error) {
 		return nil, fmt.Errorf("get products: %w", err)
 	}
 
+	// Empty Product array
 	var products []*models.Product
 
 	// Iterate through records and add to products array
