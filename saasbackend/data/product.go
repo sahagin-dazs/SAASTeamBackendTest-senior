@@ -134,17 +134,23 @@ func (h *ProductHandle) ReadOne(q string) (*models.Product, error) {
 	defer txn.Abort()
 
 	// Get single product by unique id
-	product, err := txn.First("product", "id", q)
+	myProduct, err := txn.First("product", "id", q)
 	if err != nil {
 		return nil, fmt.Errorf("get product: %w", err)
 	}
 
-	// Don't return nil for empty object
-	if product != nil {
-		return product.(*models.Product), nil
-	} else {
+	// Ensure db result is not nil
+	if myProduct == nil {
 		return &models.Product{}, nil
 	}
+
+	// Attempt to cast the db result to the Product model
+	product, ok := myProduct.(*models.Product)
+	if !ok {
+		return nil, fmt.Errorf("error casting db result as product")
+	}
+
+	return product, nil
 }
 
 func (h *ProductHandle) Read() ([]*models.Product, error) {

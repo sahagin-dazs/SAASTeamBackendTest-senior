@@ -13,12 +13,9 @@ import (
 	"github.com/go-chi/chi"
 )
 
-// shortcut for creating all the JSON objects we will send and receive.
-type MSI map[string]interface{}
-
 func TestCreateProduct(t *testing.T) {
 
-	newProduct := MSI{
+	newProduct := map[string]interface{}{
 		"product_name":           "volleyball",
 		"product_price":          750,
 		"product_type":           "sporting_good",
@@ -57,7 +54,7 @@ func TestGetProductById2(t *testing.T) {
 	r.Method("GET", "/products/{product_id}", BaseHandler(GetProductById(productService)))
 	r.ServeHTTP(rec, req)
 
-	myProduct := MSI{
+	myProduct := map[string]interface{}{
 		"product_id":    "2",
 		"product_name":  "burrito",
 		"product_price": 700,
@@ -81,7 +78,7 @@ func TestGetProductById3(t *testing.T) {
 	r.Method("GET", "/products/{product_id}", BaseHandler(GetProductById(productService)))
 	r.ServeHTTP(rec, req)
 
-	myProduct := MSI{
+	myProduct := map[string]interface{}{
 		"product_id":    "3",
 		"product_name":  "basketball",
 		"product_price": 1200,
@@ -105,45 +102,45 @@ func TestGetAllProducts(t *testing.T) {
 	r.Method("GET", "/products", BaseHandler(GetAllProducts(productService)))
 	r.ServeHTTP(rec, req)
 
-	prod1 := MSI{
+	prod1 := map[string]interface{}{
 		"product_id":    "1",
 		"product_name":  "banana",
 		"product_type":  "food",
 		"product_price": 500,
 	}
 
-	prod2 := MSI{
+	prod2 := map[string]interface{}{
 		"product_id":    "2",
 		"product_name":  "burrito",
 		"product_type":  "food",
 		"product_price": 700,
 	}
 
-	prod3 := MSI{
+	prod3 := map[string]interface{}{
 		"product_id":    "3",
 		"product_name":  "basketball",
 		"product_type":  "sporting_good",
 		"product_price": 1200,
 	}
 
-	prod4 := MSI{
+	prod4 := map[string]interface{}{
 		"product_id":    "4",
 		"product_name":  "baseball",
 		"product_type":  "sporting_good",
 		"product_price": 900,
 	}
 
-	prod5 := MSI{
+	prod5 := map[string]interface{}{
 		"product_id":    "5",
 		"product_name":  "volleyball",
 		"product_type":  "sporting_good",
 		"product_price": 750,
 	}
 
-	var productSlice []MSI
+	var productSlice []map[string]interface{}
 	productSlice = append(productSlice, prod1, prod2, prod3, prod4, prod5)
 
-	myProductResult := MSI{
+	myProductResult := map[string]interface{}{
 		"count":    5,
 		"products": productSlice,
 	}
@@ -159,13 +156,13 @@ func TestGetAllProducts(t *testing.T) {
 func TestCalculatePrice1(t *testing.T) {
 
 	// Create the object we will submit in the request body
-	myPB := MSI{
+	myPB := map[string]interface{}{
 		"cart": []interface{}{
-			MSI{
+			map[string]interface{}{
 				"product_id": "1",
 				"quantity":   2,
 			},
-			MSI{
+			map[string]interface{}{
 				"product_id": "2",
 				"quantity":   2,
 			},
@@ -184,7 +181,7 @@ func TestCalculatePrice1(t *testing.T) {
 	r.Method("POST", "/calculate-price", BaseHandler(CalculatePrice(productService)))
 	r.ServeHTTP(rec, req)
 
-	myPrices := MSI{
+	myPrices := map[string]interface{}{
 		"total_objects": 4,
 		"total_cost":    2400,
 	}
@@ -200,22 +197,22 @@ func TestCalculatePrice1(t *testing.T) {
 func TestCalculatePrice2(t *testing.T) {
 
 	// Create the object we will submit in the request body
-	myPB := MSI{
+	myPB := map[string]interface{}{
 		"cart": []interface{}{
-			MSI{
+			map[string]interface{}{
 				"product_id": "1",
 				"quantity":   1,
 			},
-			MSI{
+			map[string]interface{}{
 				"product_id": "2",
 				"quantity":   1,
 			},
-			MSI{
+			map[string]interface{}{
 				"product_id":  "3",
 				"quantity":    1,
 				"coupon_code": "sport30",
 			},
-			MSI{
+			map[string]interface{}{
 				"product_id":  "4",
 				"quantity":    1,
 				"coupon_code": "sport30",
@@ -235,7 +232,7 @@ func TestCalculatePrice2(t *testing.T) {
 	r.Method("POST", "/calculate-price", BaseHandler(CalculatePrice(productService)))
 	r.ServeHTTP(rec, req)
 
-	myPrices := MSI{
+	myPrices := map[string]interface{}{
 		"total_objects": 4,
 		"total_cost":    2670,
 	}
@@ -251,21 +248,21 @@ func TestCalculatePrice2(t *testing.T) {
 func TestCalculatePrice3(t *testing.T) {
 
 	// Create the object we will submit in the request body
-	myPB := MSI{
+	myPB := map[string]interface{}{
 		"cart": []interface{}{
-			MSI{
+			map[string]interface{}{
 				"product_id": "1",
 				"quantity":   0,
 			},
-			MSI{
+			map[string]interface{}{
 				"product_id": "2",
 				"quantity":   0,
 			},
-			MSI{
+			map[string]interface{}{
 				"product_id": "3",
 				"quantity":   0,
 			},
-			MSI{
+			map[string]interface{}{
 				"product_id": "4",
 				"quantity":   0,
 			},
@@ -284,7 +281,7 @@ func TestCalculatePrice3(t *testing.T) {
 	r.Method("POST", "/calculate-price", BaseHandler(CalculatePrice(productService)))
 	r.ServeHTTP(rec, req)
 
-	myPrices := MSI{
+	myPrices := map[string]interface{}{
 		"total_objects": 0,
 		"total_cost":    0,
 	}
@@ -300,22 +297,22 @@ func TestCalculatePrice3(t *testing.T) {
 func TestCalculatePrice4(t *testing.T) {
 
 	// Create the object we will submit in the request body
-	myPB := MSI{
+	myPB := map[string]interface{}{
 		"cart": []interface{}{
-			MSI{
+			map[string]interface{}{
 				"product_id": "1",
 				"quantity":   100,
 			},
-			MSI{
+			map[string]interface{}{
 				"product_id":  "2",
 				"quantity":    100,
 				"coupon_code": "food50",
 			},
-			MSI{
+			map[string]interface{}{
 				"product_id": "3",
 				"quantity":   0,
 			},
-			MSI{
+			map[string]interface{}{
 				"product_id": "4",
 				"quantity":   0,
 			},
@@ -334,7 +331,7 @@ func TestCalculatePrice4(t *testing.T) {
 	r.Method("POST", "/calculate-price", BaseHandler(CalculatePrice(productService)))
 	r.ServeHTTP(rec, req)
 
-	myPrices := MSI{
+	myPrices := map[string]interface{}{
 		"total_objects": 200,
 		"total_cost":    85000,
 	}
@@ -350,13 +347,13 @@ func TestCalculatePrice4(t *testing.T) {
 func TestCalculatePrice5(t *testing.T) {
 
 	// Create the object we will submit in the request body
-	myPB := MSI{
+	myPB := map[string]interface{}{
 		"cart": []interface{}{
-			MSI{
+			map[string]interface{}{
 				"product_id": "1",
 				"quantity":   50,
 			},
-			MSI{
+			map[string]interface{}{
 				"product_id":  "21",
 				"quantity":    50,
 				"coupon_code": "food50",
@@ -376,7 +373,7 @@ func TestCalculatePrice5(t *testing.T) {
 	r.Method("POST", "/calculate-price", BaseHandler(CalculatePrice(productService)))
 	r.ServeHTTP(rec, req)
 
-	myPrices := MSI{
+	myPrices := map[string]interface{}{
 		"total_objects": 50,
 		"total_cost":    25000,
 	}
