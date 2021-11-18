@@ -2,39 +2,42 @@ package models
 
 // ProductsResponse object containing a ProductResponse array
 type ProductsResponse struct {
-	Count    int64             `json:"count"`
+	Count    int               `json:"count"`
 	Products []ProductResponse `json:"products"`
 }
 
 // ProductResponse object containing the fields we want the API consumer to receive
 type ProductResponse struct {
-	ProductId    string `json:"product_id,omitempty"`
+	ProductId    int    `json:"product_id,omitempty"`
 	ProductName  string `json:"product_name,omitempty"`
 	ProductType  string `json:"product_type,omitempty"`
-	ProductPrice int64  `json:"product_price,omitempty"`
+	ProductPrice int    `json:"product_price,omitempty"`
 }
 
 // Product object including ProductType
 type Product struct {
-	ProductId            string `json:"product_id"`
+	ProductId            int    `json:"product_id"`
 	ProductName          string `json:"product_name"`
 	ProductType          string `json:"product_type"`
-	ProductPrice         int64  `json:"product_price"`
-	ProductDiscountPrice int64  `json:"product_discount_price"`
+	ProductPrice         int    `json:"product_price"`
+	ProductDiscountPrice int    `json:"product_discount_price"`
 	CouponCode           string `json:"coupon_code"`
 }
 
-// Request object containing cart details
+// Request object containing slice of CartItems
 type Cart struct {
-	Cart []struct {
-		ProductID  string `json:"product_id"`
-		Quantity   int64  `json:"quantity"`
-		CouponCode string `json:"coupon_code,omitempty"`
-	} `json:"cart"`
+	CartItems []CartItem `json:"cart"`
+}
+
+// A specific cart item
+type CartItem struct {
+	ProductId  int    `json:"product_id"`
+	Quantity   int    `json:"quantity"`
+	CouponCode string `json:"coupon_code,omitempty"`
 }
 
 // Calculated price response object
 type CalculatePriceResponse struct {
-	TotalObjects int64 `json:"total_objects"`
-	TotalCost    int64 `json:"total_cost"`
+	TotalObjects int `json:"total_objects"`
+	TotalCost    int `json:"total_cost"`
 }

@@ -51,12 +51,12 @@ Run `make test_before` and all tests should pass.
 {
   "cart": [
     {
-      "product_id": "1",
+      "product_id": 1,
       "quantity": 2,
       "coupon_code": "food50"
     },
     {
-      "product_id": "2",
+      "product_id": 2,
       "quantity": 4      
     },
   ]

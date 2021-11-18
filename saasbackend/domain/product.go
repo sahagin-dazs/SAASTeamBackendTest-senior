@@ -8,7 +8,7 @@ import (
 
 type ProductHandler interface {
 	Create(models.Product) (*models.Product, error)
-	ReadOne(string) (*models.Product, error)
+	ReadOne(int) (*models.Product, error)
 	Read() ([]*models.Product, error)
 }
 
@@ -16,7 +16,7 @@ type ProductHandler interface {
 type ProductServiceInterface interface {
 	CalculatePrice(cart models.Cart) (*models.CalculatePriceResponse, error)
 	GetAllProducts() (*models.ProductsResponse, error)
-	GetProductById(string) (*models.ProductResponse, error)
+	GetProductById(int) (*models.ProductResponse, error)
 	Save(models.Product) (*models.Product, error)
 }
 
@@ -32,21 +32,21 @@ func NewProductService(p1 ProductHandler) ProductServiceInterface {
 
 func (ps ProductService) CalculatePrice(cart models.Cart) (*models.CalculatePriceResponse, error) {
 	// Set up our variables
-	totalCost := int64(0)
-	totalObjects := int64(0)
+	totalCost := int(0)
+	totalObjects := int(0)
 
-	// Iterate throught the cart object
-	for _, item := range cart.Cart {
+	// Iterate throught the cart slice
+	for _, item := range cart.CartItems {
 		// Make sure a proper quantity was provided
 		if item.Quantity <= 0 {
 			continue
 		}
 
 		// Retrieve a product if it's valid, let us know if it isn't
-		product, err := ps.productHandler.ReadOne(item.ProductID)
+		product, err := ps.productHandler.ReadOne(item.ProductId)
 
 		// If a product isn't valid, move on to the next item
-		if (err != nil) || (product.ProductId == "") {
+		if (err != nil) || (product.ProductId == 0) {
 			continue
 		}
 
@@ -75,8 +75,8 @@ func (ps ProductService) GetAllProducts() (*models.ProductsResponse, error) {
 		return nil, fmt.Errorf("read: %w", err)
 	}
 
-	// Create product response array
-	var productResponse []models.ProductResponse
+	// Create product response slice
+	productResponse := make([]models.ProductResponse, 0)
 
 	// Iterate through all of the products
 	for _, myProduct := range myProducts {
@@ -88,25 +88,23 @@ func (ps ProductService) GetAllProducts() (*models.ProductsResponse, error) {
 			ProductPrice: myProduct.ProductPrice,
 		}
 
-		// Append the product response object to the product response object array
+		// Append the product response object to the product response object slice
 		productResponse = append(productResponse, product)
 	}
 
 	// Create the get all products response object
 	productsResponse := models.ProductsResponse{
 		Products: productResponse,
-		Count:    int64(len(myProducts)),
+		Count:    int(len(myProducts)),
 	}
 
 	return &productsResponse, nil
 }
 
-func (ps ProductService) GetProductById(productId string) (*models.ProductResponse, error) {
+func (ps ProductService) GetProductById(productId int) (*models.ProductResponse, error) {
 	myProduct, err := ps.productHandler.ReadOne(productId)
 	if err != nil {
-		if myProduct == nil {
-			return nil, fmt.Errorf("read one: %w", err)
-		}
+		return nil, fmt.Errorf("read one: %w", err)
 	}
 
 	// Create the get product response object

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"saasteamtest/saasbackend/models"
-	"strconv"
 
 	"github.com/hashicorp/go-memdb"
 )
@@ -39,7 +38,7 @@ func (h *ProductHandle) startDatabase() (*memdb.MemDB, error) {
 						Name:         "id",
 						Unique:       true,
 						AllowMissing: false,
-						Indexer:      &memdb.StringFieldIndex{Field: "ProductId"},
+						Indexer:      &memdb.IntFieldIndex{Field: "ProductId"},
 					},
 					"product_name": {
 						Name:         "product_name",
@@ -87,13 +86,13 @@ func (h *ProductHandle) startDatabase() (*memdb.MemDB, error) {
 
 	// Prepare test data
 	items := make([]*models.Product, 0)
-	item1 := models.Product{ProductId: "1", ProductName: "banana", ProductType: "food", ProductPrice: 500, ProductDiscountPrice: 250, CouponCode: "food50"}
+	item1 := models.Product{ProductId: 1, ProductName: "banana", ProductType: "food", ProductPrice: 500, ProductDiscountPrice: 250, CouponCode: "food50"}
 	items = append(items, &item1)
-	item2 := models.Product{ProductId: "2", ProductName: "burrito", ProductType: "food", ProductPrice: 700, ProductDiscountPrice: 350, CouponCode: "food50"}
+	item2 := models.Product{ProductId: 2, ProductName: "burrito", ProductType: "food", ProductPrice: 700, ProductDiscountPrice: 350, CouponCode: "food50"}
 	items = append(items, &item2)
-	item3 := models.Product{ProductId: "3", ProductName: "basketball", ProductType: "sporting_good", ProductPrice: 1200, ProductDiscountPrice: 840, CouponCode: "sport30"}
+	item3 := models.Product{ProductId: 3, ProductName: "basketball", ProductType: "sporting_good", ProductPrice: 1200, ProductDiscountPrice: 840, CouponCode: "sport30"}
 	items = append(items, &item3)
-	item4 := models.Product{ProductId: "4", ProductName: "baseball", ProductType: "sporting_good", ProductPrice: 900, ProductDiscountPrice: 630, CouponCode: "sport30"}
+	item4 := models.Product{ProductId: 4, ProductName: "baseball", ProductType: "sporting_good", ProductPrice: 900, ProductDiscountPrice: 630, CouponCode: "sport30"}
 	items = append(items, &item4)
 
 	// Insert the test data
@@ -114,7 +113,7 @@ func (h *ProductHandle) Create(obj models.Product) (*models.Product, error) {
 	var txn = h.db.Txn(true)
 
 	// Assign the autonumber for product_id
-	obj.ProductId = strconv.Itoa(h.counter)
+	obj.ProductId = h.counter
 	h.counter++
 
 	// Insert into the database
@@ -128,7 +127,7 @@ func (h *ProductHandle) Create(obj models.Product) (*models.Product, error) {
 	return &obj, nil
 }
 
-func (h *ProductHandle) ReadOne(q string) (*models.Product, error) {
+func (h *ProductHandle) ReadOne(q int) (*models.Product, error) {
 	// Create read-only transaction
 	var txn = h.db.Txn(false)
 	defer txn.Abort()
@@ -137,11 +136,6 @@ func (h *ProductHandle) ReadOne(q string) (*models.Product, error) {
 	myProduct, err := txn.First("product", "id", q)
 	if err != nil {
 		return nil, fmt.Errorf("get product: %w", err)
-	}
-
-	// Ensure db result is not nil
-	if myProduct == nil {
-		return &models.Product{}, nil
 	}
 
 	// Attempt to cast the db result to the Product model
@@ -164,10 +158,10 @@ func (h *ProductHandle) Read() ([]*models.Product, error) {
 		return nil, fmt.Errorf("get products: %w", err)
 	}
 
-	// Empty Product array
+	// Create empty Product slice
 	var products []*models.Product
 
-	// Iterate through records and add to products array
+	// Iterate through records and add to products slice
 	for obj := product.Next(); obj != nil; obj = product.Next() {
 		products = append(products, obj.(*models.Product))
 	}

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"saasteamtest/saasbackend/domain"
 	"saasteamtest/saasbackend/models"
+	"strconv"
 
 	"github.com/go-chi/chi"
 )
@@ -40,7 +41,11 @@ func CreateProduct(productService domain.ProductServiceInterface) func(w http.Re
 // GET /products/{product_id}
 func GetProductById(productService domain.ProductServiceInterface) func(w http.ResponseWriter, r *http.Request) error {
 	return func(w http.ResponseWriter, r *http.Request) error {
-		productId := chi.URLParam(r, "product_id")
+
+		productId, err := strconv.Atoi(chi.URLParam(r, "product_id"))
+		if err != nil {
+			return Respond(w, "Invalid value: product_id", 400)
+		}
 
 		product, err := productService.GetProductById(productId)
 		if err != nil {
